@@ -12,17 +12,37 @@
       </div>
     </div>
     <div class="user-panel">
-
-      <div class="full-panel card" v-if="stage.list">
+      <div class="full-panel listing" v-if="stage.list">
         <p class="greeting">
           Welcome, <span class="name">{{ name }}</span>
         </p>
         <div class="center">
-          
+          <div class="bank-card" v-for="bank in banks" :key="bank.name">
+            <span class="km">{{ bank.km }}</span>
+            <p class="name">{{ bank.name }}</p>
+            <p><span class="stock">Address:</span> {{ bank.address }}</p>
+            <p>
+              <span class="stock">Last Updated Stock:</span> {{ bank.stock }}
+            </p>
+            <div class="groups">
+              <p>Available Blood Groups:</p>
+              <div>
+                <span class="type" v-for="type in bank.available">{{
+                  type
+                }}</span>
+              </div>
+            </div>
+            <div class="groups">
+              <p>Needed Blood Groups:</p>
+              <div>
+                <span class="type" v-for="type in bank.needed">{{ type }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="full-panel card" v-else-if="stage.locate">
+      <div class="full-panel loading" v-else-if="stage.locate">
         <p class="greeting">
           Welcome, <span class="name">{{ name }}</span>
         </p>
@@ -32,7 +52,7 @@
         </div>
       </div>
 
-      <div class="info card" v-else-if="stage.info">
+      <div class="info" v-else-if="stage.info">
         <h2>Hi, Welcome to Sync</h2>
         <p>
           Your donation is hope in a bag. Give blood, give life and make a
@@ -51,34 +71,47 @@
 </template>
 
 <script setup>
+const banks = ref([
+  {
+    name: "Excel-T Diagnostic Service",
+    km: "2.5KM",
+    address: "7, Ijagbemi Street, Popoola, Bariga",
+    stock: "21st February 2025",
+    available: ["A+", "A-", "AB+", "AB-"],
+    needed: ["B-", "O-", "B-"],
+  },
+  {
+    name: "Chevron Medical Hospital",
+    km: "2.5KM",
+    address: "7, Ijagbemi Street, Popoola, Bariga",
+    stock: "21st February 2025",
+    available: ["A+", "A-", "AB+", "AB-"],
+    needed: ["B-", "O-", "B-"],
+  },
+  {
+    name: "St. Dan's Blood Bank",
+    km: "2.5KM",
+    address: "7, Ijagbemi Street, Popoola, Bariga",
+    stock: "21st February 2025",
+    available: ["A+", "A-", "AB+", "AB-"],
+    needed: ["B-", "O-", "B-"],
+  },
+]);
+
 const stage = ref({
   info: true,
   locate: true, //localStorage.getItem("name") || false
   list: true,
 });
 
-const getName = () => {
-  return localStorage.getItem("name") || "";
-};
-
-const getNumber = () => {
-  return localStorage.getItem("number") || "";
-};
-
 const name = ref("");
 const number = ref("");
 
 const toNext = (next) => {
-  //saveInfo(name.value);
   if (next === "locate") {
     stage.value.info = false;
     stage.value.locate = true;
   }
-};
-
-const saveInfo = () => {
-  localStorage.setItem("name", name.value);
-  localStorage.setItem("number", number.value);
 };
 </script>
 
@@ -88,6 +121,7 @@ const saveInfo = () => {
   height: 100%;
   display: grid;
   grid-template-columns: 1fr 1.3fr;
+  position: fixed;
 }
 
 #locator-sidebar {
@@ -181,6 +215,8 @@ const saveInfo = () => {
   align-items: center;
   padding: 20px;
   text-align: center;
+  position: relative;
+  overflow-y: auto;
 
   h2 {
     font-size: 2.5rem;
@@ -189,7 +225,7 @@ const saveInfo = () => {
 
   p {
     max-width: 500px;
-    font-size: 1.7rem;
+    //font-size: 1.7rem;
   }
 }
 
@@ -263,6 +299,23 @@ const saveInfo = () => {
   }
 }
 
+.loading {
+  p {
+    margin-top: 10px;
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+}
+
+.listing {
+  .center {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .center {
   width: 100%;
   height: 100%;
@@ -270,11 +323,67 @@ const saveInfo = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
+  margin-top: 150px;
+}
 
-  p {
-    margin-top: 10px;
+.bank-card {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+    rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+  transition: 0.3s;
+  cursor: pointer;
+  &:hover {
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+      rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px,
+      rgba(0, 0, 0, 0.1) 0px 0px 0px 3px;
+  }
+
+  .name {
     font-size: 1.8rem;
     font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .km {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    margin-left: 5px;
+    padding: 5px 10px;
+    background: #bdeabd;
+    border-radius: 5px;
+  }
+
+  .stock {
+    //padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+
+  .groups {
+    margin-top: 10px;
+    p {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    div {
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  .type {
+    padding: 5px;
+    background: #ffebe8;
+    border: 1px solid #e26450;
+    border-radius: 5px;
   }
 }
 </style>
