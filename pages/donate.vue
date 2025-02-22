@@ -1,0 +1,247 @@
+<template>
+  <div id="container">
+    <div id="locator-sidebar">
+      <div class="overlay">
+        <div class="location-content">
+          <div class="permission">Accept location permission</div>
+          <div class="icon-wrapper">
+            <Icon name="fluent:location-24-filled" />
+          </div>
+          <p>Searching for a Blood Bank Near You...</p>
+        </div>
+      </div>
+    </div>
+    <div class="user-panel">
+      
+      <div class="full-panel card" v-if="stage.locate">
+        <p class="greeting">Welcome, {{ getName() }}</p>
+        <div class="center">
+          <Icon name="eos-icons:loading" size="30px"></Icon>
+          <h2>Locating nearest blood bank...</h2>
+        </div>
+      </div>
+
+      <div class="info card" v-else-if="stage.info">
+        <h2>Hi, Welcome to Sync</h2>
+        <p>
+          Your donation is hope in a bag. Give blood, give life and make a
+          difference today
+        </p>
+        <input v-model="name" type="text" placeholder="Enter your name" />
+        <input
+          v-model="number"
+          type="number"
+          placeholder="Your WhatsApp number"
+        />
+        <button @click="toNext('locate')" class="continue-btn">Continue</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const stage = ref({
+  info: false,
+  locate: true, //localStorage.getItem("name") || false
+});
+
+const getName = () => {
+  return localStorage.getItem("name") || "";
+};
+
+const getNumber = () => {
+  return localStorage.getItem("number") || "";
+};
+
+const name = ref("");
+const number = ref("");
+
+const toNext = (next) => {
+  //saveInfo(name.value);
+  if (next === "locate") {
+    stage.value.info = false;
+    stage.value.locate = true;
+  }
+};
+
+const saveInfo = () => {
+  localStorage.setItem("name", name.value);
+  localStorage.setItem("number", number.value);
+};
+</script>
+
+<style scoped lang="less">
+#container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+}
+
+#locator-sidebar {
+  background: #afcacf;
+  background: url("/img/map3.png") no-repeat;
+  background-size: cover;
+}
+
+.overlay {
+  padding: 20px;
+  background: rgba(23, 20, 20, 0.7);
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.location-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+
+  p {
+    color: white !important;
+    margin-top: 30px;
+    font-size: 2rem;
+  }
+
+  .permission {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: white;
+    opacity: 0.6;
+    font-weight: 500;
+  }
+
+  .icon-wrapper {
+    position: relative;
+    background: white;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+      rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    z-index: 2;
+    .iconify {
+      font-size: 65px;
+      color: rgb(103, 116, 71);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120%;
+      height: 120%;
+      background: rgba(255, 255, 255, 0.848);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      z-index: -1;
+      animation: pulse 2s infinite ease-in-out forwards;
+
+      @keyframes pulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0.8);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.12);
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
+
+.user-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 500;
+  }
+
+  p {
+    max-width: 500px;
+    font-size: 1.7rem;
+  }
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  input {
+    width: 300px;
+    max-width: 100%;
+    padding: 15px 20px;
+    border-radius: 7px;
+    border: none;
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+      rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    transition: 0.3s;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+      rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px,
+      rgba(0, 0, 0, 0.1) 0px 0px 0px 3px;
+    &:focus {
+      outline: none;
+      //border: 2px solid #6c63ff;
+      box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
+        rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px,
+        rgba(0, 0, 0, 0.3) 0px 0px 0px 3px;
+    }
+  }
+
+  .continue-btn {
+    width: 300px;
+    max-width: 100%;
+    padding: 15px 20px;
+    border-radius: 7px;
+    border: none;
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    background: #6c63ff;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+    outline: none;
+    &:hover {
+      background: #5a4dfc;
+    }
+  }
+}
+
+.full-panel {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  width: 100%;
+  height: 100%;
+
+  .greeting {
+    font-size: 2rem;
+  }
+}
+</style>
