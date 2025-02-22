@@ -44,7 +44,9 @@
         </div>
       </div>
 
-      <div class="full-panel loading" v-else-if="stage.locate">
+
+      <Loading v-else-if="stage.locate"></Loading>
+      <!-- <div class="full-panel loading" v-else-if="stage.locate">
         <p class="greeting">
           Welcome, <span class="name">{{ name }}</span>
         </p>
@@ -52,13 +54,12 @@
           <Icon name="eos-icons:loading" size="50px"></Icon>
           <p>Searching Blood Banks...</p>
         </div>
-      </div>
+      </div> -->
 
       <div class="info" v-else-if="stage.info">
         <h2>Hi, Welcome to Sync</h2>
         <p>
-          Your donation is hope in a bag. Give blood, give life and make a
-          difference today
+          Instantly check nearby blood banks for the exact blood types your patients need.
         </p>
         <input v-model="name" type="text" placeholder="Hospital Name" />
         <input

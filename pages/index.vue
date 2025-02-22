@@ -6,7 +6,7 @@
     <div class="wrapper">
       <nuxt-link to="/donate">Donator</nuxt-link>
       <nuxt-link to="/">Blood Bank</nuxt-link>
-      <nuxt-link to="/">Hospital</nuxt-link>
+      <nuxt-link to="/donate">Hospital</nuxt-link>
     </div>
   </div>
 </template>
