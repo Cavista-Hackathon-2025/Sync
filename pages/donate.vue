@@ -12,12 +12,23 @@
       </div>
     </div>
     <div class="user-panel">
-      
-      <div class="full-panel card" v-if="stage.locate">
-        <p class="greeting">Welcome, {{ getName() }}</p>
+
+      <div class="full-panel card" v-if="stage.list">
+        <p class="greeting">
+          Welcome, <span class="name">{{ name }}</span>
+        </p>
         <div class="center">
-          <Icon name="eos-icons:loading" size="30px"></Icon>
-          <h2>Locating nearest blood bank...</h2>
+          
+        </div>
+      </div>
+
+      <div class="full-panel card" v-else-if="stage.locate">
+        <p class="greeting">
+          Welcome, <span class="name">{{ name }}</span>
+        </p>
+        <div class="center">
+          <Icon name="eos-icons:loading" size="50px"></Icon>
+          <p>Searching Blood Banks...</p>
         </div>
       </div>
 
@@ -41,8 +52,9 @@
 
 <script setup>
 const stage = ref({
-  info: false,
+  info: true,
   locate: true, //localStorage.getItem("name") || false
+  list: true,
 });
 
 const getName = () => {
@@ -75,7 +87,7 @@ const saveInfo = () => {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
+  grid-template-columns: 1fr 1.3fr;
 }
 
 #locator-sidebar {
@@ -241,7 +253,28 @@ const saveInfo = () => {
   height: 100%;
 
   .greeting {
-    font-size: 2rem;
+    font-size: 2.2rem;
+    font-weight: 500;
+
+    .name {
+      font-style: italic;
+      color: #6c63ff;
+    }
+  }
+}
+
+.center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    margin-top: 10px;
+    font-size: 1.8rem;
+    font-weight: 500;
   }
 }
 </style>
