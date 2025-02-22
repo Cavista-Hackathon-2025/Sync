@@ -12,7 +12,9 @@
       </div>
     </div>
     <div class="user-panel">
-      <div class="full-panel listing" v-if="stage.list">
+      <Bank v-if="stage.result"></Bank>
+
+      <div class="full-panel listing" v-else-if="stage.list">
         <p class="greeting">
           Welcome, <span class="name">{{ name }}</span>
         </p>
@@ -58,11 +60,11 @@
           Your donation is hope in a bag. Give blood, give life and make a
           difference today
         </p>
-        <input v-model="name" type="text" placeholder="Enter your name" />
+        <input v-model="name" type="text" placeholder="Hospital Name" />
         <input
           v-model="number"
           type="number"
-          placeholder="Your WhatsApp number"
+          placeholder="WhatsApp number"
         />
         <button @click="toNext('locate')" class="continue-btn">Continue</button>
       </div>
@@ -100,8 +102,9 @@ const banks = ref([
 
 const stage = ref({
   info: true,
-  locate: true, //localStorage.getItem("name") || false
-  list: true,
+  locate: false, //localStorage.getItem("name") || false
+  list: false,
+  result: false,
 });
 
 const name = ref("");
@@ -301,7 +304,6 @@ const toNext = (next) => {
 
 .loading {
   p {
-    margin-top: 10px;
     font-size: 1.8rem;
     font-weight: 500;
   }
@@ -311,8 +313,6 @@ const toNext = (next) => {
   .center {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
   }
 }
 
