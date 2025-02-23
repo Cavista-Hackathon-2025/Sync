@@ -103,6 +103,7 @@ const number = ref("");
   font-size: 3rem;
   font-weight: 500;
   margin-top: 20px;
+  line-height: 1.3;
 }
 
 .text {
