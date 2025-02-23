@@ -12,6 +12,7 @@
   "dependencies": {
     "@firebase/app-types": "^0.9.3",
     "@nuxt/icon": "1.10.3",
+    "@supabase/supabase-js": "^2.48.1",
     "firebase": "^11.2.0",
     "firebase-admin": "^13.0.2",
     "firebase-functions": "^6.3.0",

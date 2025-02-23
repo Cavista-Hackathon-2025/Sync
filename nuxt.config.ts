@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   ssr: false,
-  modules: ["@nuxt/icon", "@vueuse/nuxt", "nuxt-vuefire"],
+  modules: ["@nuxt/icon", "@vueuse/nuxt"],
   app: {
     head: {
       link: [
@@ -34,18 +34,11 @@ export default defineNuxtConfig({
       },
     },
   },
-  vuefire: {
-    config: {
-      apiKey: "AIzaSyClEeSJnjwx_nfsaGiA1pTs4XsMLnbmr7c",
-      authDomain: "ezer-dev.firebaseapp.com",
-      projectId: "ezer-dev",
-      storageBucket: "ezer-dev.firebasestorage.app",
-      messagingSenderId: "269482856850",
-      appId: "1:269482856850:web:efca1678e7cf4d212d714b",
-      measurementId: "G-0NMVD71REG",
-    },
-    auth: {
-      enabled: true,
+  runtimeConfig: {
+    public: {
+      SUPABASE_URL: "https://jyqgjotvulqukidtwivg.supabase.co", // Exposed to the frontend as well.
+      SUPABASE_KEY:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp5cWdqb3R2dWxxdWtpZHR3aXZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAyNzM4NDMsImV4cCI6MjA1NTg0OTg0M30.nYCyaFtBjG1hBZU9YMES8nQteb8IMbN1lFwVnagEXmE",
     },
   },
 });

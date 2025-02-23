@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="user-panel">
-      <div class="info" v-show="false">
+      <div class="info" v-show="stage.info">
         <h2>Welcome to BloodSync</h2>
         <p>
           Instantly check nearby blood banks for the exact blood types your
@@ -28,10 +28,15 @@
         </p>
         <input v-model="name" type="text" placeholder="Full Name" />
         <input v-model="number" type="number" placeholder="Phone number" />
-        <input v-model="email" type="number" placeholder="Email Address" />
-        <input v-model="text" type="number" placeholder="Location" disabled />
-        <select name="blood" id="blood-select">
-          <option value="">--Please choose an option--</option>
+        <input v-model="email" type="email" placeholder="Email Address" />
+        <input
+          v-model="location"
+          type="number"
+          placeholder="Location"
+          disabled
+        />
+        <select v-model="bloodtype" name="blood" id="blood-select">
+          <option value="">--Please select blood type--</option>
           <option value="ap">A+</option>
           <option value="an">A-</option>
           <option value="bp">B+</option>
@@ -40,20 +45,24 @@
           <option value="abn">AB-</option>
           <option value="op">O+</option>
           <option value="on">O-</option>
+          <option value="none">Not known</option>
         </select>
-        <button @click="toNext('locate')" class="continue-btn">Continue</button>
+        <button @click="saveDonor()" class="continue-btn">
+          <Icon v-if="isLoading" name="codex:loader" size="40px"></Icon>
+          <span v-else>Continue</span>
+        </button>
         <p class="notice">
           By clicking Continue you agree to receive notifications from blood
           banks and be prompted for donation opportunities.
         </p>
       </div>
 
-      <div class="save" v-show="true">
+      <div class="save" v-show="stage.complete">
         <Icon name="nrk:media-media-complete" size="70px"></Icon>
         <p>
           You're officially part of a life-saving movement!<br /><br />
           We'll notify you when there's an urgent need for your blood type—thank
-          you for being a real-world hero! 💙
+          you for being a real-world hero!
         </p>
       </div>
     </div>
@@ -61,8 +70,54 @@
 </template>
 
 <script setup>
+import { createClient } from "@supabase/supabase-js";
+
+const stage = ref({
+  info: true,
+  complete: false,
+});
+const isLoading = ref(false);
 const name = ref("");
 const number = ref("");
+const email = ref("");
+const location = ref("");
+const bloodtype = ref("");
+
+const config = useRuntimeConfig();
+
+// Create a single supabase client for interacting with your database
+const supabaseKey = config.public.SUPABASE_KEY;
+const supabase = createClient(
+  "https://jyqgjotvulqukidtwivg.supabase.co",
+  supabaseKey
+);
+
+const saveDonor = async () => {
+  console.log(
+    name.value,
+    number.value,
+    email.value,
+    location.value,
+    bloodtype.value,
+    supabaseKey
+  );
+  isLoading.value = true;
+  const { error } = await supabase.from("donors").insert({
+    name: name.value,
+    phone: number.value,
+    email: email.value,
+    location: location.value,
+    bloodtype: bloodtype.value,
+  });
+
+  isLoading.value = false;
+  if (error) {
+    console.log(error);
+  } else {
+    stage.value.info = false;
+    stage.value.complete = true;
+  }
+};
 </script>
 
 <style scoped lang="less">
@@ -213,7 +268,12 @@ const number = ref("");
     width: 300px;
     max-width: 100%;
     padding: 15px 20px;
+    height: 53px;
     border-radius: 7px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: none;
     margin-top: 20px;
     font-size: 1.5rem;
