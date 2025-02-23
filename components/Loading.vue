@@ -37,4 +37,15 @@
     font-weight: 500;
   }
 }
+
+.center {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 150px;
+}
 </style>

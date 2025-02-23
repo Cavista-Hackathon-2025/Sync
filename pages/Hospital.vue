@@ -103,9 +103,9 @@ const banks = ref([
 
 const stage = ref({
   info: true,
-  locate: false, //localStorage.getItem("name") || false
+  locate: true, //localStorage.getItem("name") || false
   list: false,
-  result: true,
+  result: false,
 });
 
 const name = ref("");
