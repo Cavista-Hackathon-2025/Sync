@@ -149,6 +149,14 @@ const stage = ref({
 const name = ref("");
 const number = ref("");
 
+import { createClient } from "@supabase/supabase-js";
+const config = useRuntimeConfig();
+const supabaseKey = config.public.SUPABASE_KEY;
+const supabase = createClient(
+  "https://jyqgjotvulqukidtwivg.supabase.co",
+  supabaseKey
+);
+
 const toNext = (next) => {
   if (next === "locate") {
     triggerWatch();
@@ -165,11 +173,39 @@ const triggerWatch = () => {
   });
 };
 
+watchEffect(() => {
+  if (geolocate.value.length > 1) {
+    getBanks();
+  }
+});
+
 const hideLocate = () => {
   window.setTimeout(() => {
     stage.value.locate = false;
     stage.value.list = true;
   }, 2000);
+};
+
+function updateBankInPlace(banks) {
+  // Helper function to format a single blood type
+  const formatBloodType = type =>
+    type.toUpperCase().replace("P", "+").replace("N", "-");
+
+  // Update each object in the banks array
+  banks.forEach(bankObj => {
+    bankObj.available = bankObj.available.map(formatBloodType);
+    bankObj.needed = bankObj.needed.map(formatBloodType);
+  });
+
+  return banks
+}
+
+const getBanks = async () => {
+  // Fetch blood banks from the server
+  const { data, error } = await supabase.from("banks").select();
+
+  banks.value = updateBankInPlace(data);
+  
 };
 </script>
 
@@ -379,7 +415,7 @@ const hideLocate = () => {
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-top: 150px;
+  margin-top: 300px;
 }
 
 .bank-card {

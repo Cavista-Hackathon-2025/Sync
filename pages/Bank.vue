@@ -97,10 +97,7 @@
 
 <script setup>
 import { createClient } from "@supabase/supabase-js";
-/* const name = ref("");
-const number = ref(""); */
 const config = useRuntimeConfig();
-// Create a single supabase client for interacting with your database
 const supabaseKey = config.public.SUPABASE_KEY;
 const supabase = createClient(
   "https://jyqgjotvulqukidtwivg.supabase.co",
