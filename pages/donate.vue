@@ -2,7 +2,7 @@
   <div id="container">
     <div id="sidebar">
       <div class="sidebar-content">
-        <p class="team">Team Sync</p>
+        <p class="team">Team Sync 4 Donors</p>
         <p class="title">A Few Minutes for You, A Lifetime for Someone Else!</p>
         <p class="text">
           Your blood donation could mean the difference between life and death.
@@ -48,7 +48,7 @@
         </p>
       </div>
 
-      <div class="save">
+      <div class="save" v-show="true">
         <Icon name="nrk:media-media-complete" size="70px"></Icon>
         <p>
           You're officially part of a life-saving movement!<br /><br />

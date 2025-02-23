@@ -105,7 +105,7 @@ const stage = ref({
   info: true,
   locate: false, //localStorage.getItem("name") || false
   list: false,
-  result: false,
+  result: true,
 });
 
 const name = ref("");
