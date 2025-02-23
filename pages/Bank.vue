@@ -33,13 +33,9 @@
             <p>Basic Information</p>
             <div class="gridder">
               <input type="text" placeholder="Name" v-model="name" />
-              <input
-                type="text"
-                placeholder="Contact Number"
-                v-model="number"
-              />
+              <input type="text" placeholder="Contact Number" v-model="phone" />
               <input type="email" placeholder="email" v-model="email" />
-              <input type="text" placeholder="Address" v-model="number" />
+              <input type="text" placeholder="Address" v-model="address" />
             </div>
           </div>
 
@@ -47,49 +43,52 @@
             <p>Blood Stock Information</p>
             <div class="gridder">
               <input
-                type="text"
+                type="number"
                 placeholder="A+ (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.ap"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="A- (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.an"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="B+ (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.bp"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="B- (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.bn"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="AB+ (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.abp"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="AB- (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.abn"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="O+ (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.op"
               />
               <input
-                type="text"
+                type="number"
                 placeholder="O- (Number of Pints)"
-                v-model="name"
+                v-model="bloodGroups.on"
               />
             </div>
           </div>
 
-          <button class="update-btn">Update Stock</button>
+          <button class="update-btn" @click="update">
+            <Icon v-if="isLoading" name="codex:loader" size="40px"></Icon>
+            <span v-else>Update Stock</span>
+          </button>
         </div>
       </div>
     </div>
@@ -97,8 +96,54 @@
 </template>
 
 <script setup>
+import { createClient } from "@supabase/supabase-js";
+/* const name = ref("");
+const number = ref(""); */
+const config = useRuntimeConfig();
+// Create a single supabase client for interacting with your database
+const supabaseKey = config.public.SUPABASE_KEY;
+const supabase = createClient(
+  "https://jyqgjotvulqukidtwivg.supabase.co",
+  supabaseKey
+);
+
+const isLoading = ref(false);
 const name = ref("");
-const number = ref("");
+const phone = ref("");
+const address = ref("");
+const email = ref("");
+const bloodGroups = ref({});
+
+onMounted(() => {
+  getBank();
+});
+
+const update = async () => {
+  isLoading.value = true;
+  const { data, error } = await supabase
+    .from("banks")
+    .update({
+      name: name.value,
+      phone: phone.value,
+      address: address.value,
+      email: email.value,
+      blood: bloodGroups.value,
+    })
+    .eq("id", 1);
+  isLoading.value = false;
+  console.log(data);
+};
+
+const getBank = async () => {
+  const { data, error } = await supabase.from("banks").select().eq("id", 1);
+  console.log(data[0].email);
+  name.value = data[0].name;
+  phone.value = data[0].phone;
+  address.value = data[0].address;
+  email.value = data[0].email;
+  bloodGroups.value = data[0].blood;
+  console.log(bloodGroups.value.ap);
+};
 </script>
 
 <style scoped lang="less">
@@ -273,6 +318,10 @@ const number = ref("");
   max-width: 100%;
   padding: 15px 20px;
   border-radius: 7px;
+  height: 53px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   margin: 0 auto;
   font-size: 1.5rem;

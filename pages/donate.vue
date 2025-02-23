@@ -84,7 +84,6 @@ const location = ref("");
 const bloodtype = ref("");
 
 const config = useRuntimeConfig();
-
 // Create a single supabase client for interacting with your database
 const supabaseKey = config.public.SUPABASE_KEY;
 const supabase = createClient(
