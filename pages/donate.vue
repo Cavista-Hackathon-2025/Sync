@@ -30,10 +30,9 @@
         <input v-model="number" type="number" placeholder="Phone number" />
         <input v-model="email" type="email" placeholder="Email Address" />
         <input
-          v-model="location"
-          type="number"
+          v-model="geolocate"
+          type="text"
           placeholder="Location"
-          disabled
         />
         <select v-model="bloodtype" name="blood" id="blood-select">
           <option value="">--Please select blood type--</option>
@@ -82,6 +81,7 @@ const number = ref("");
 const email = ref("");
 const location = ref("");
 const bloodtype = ref("");
+const geolocate = ref("");
 
 const config = useRuntimeConfig();
 // Create a single supabase client for interacting with your database
@@ -90,6 +90,49 @@ const supabase = createClient(
   "https://jyqgjotvulqukidtwivg.supabase.co",
   supabaseKey
 );
+
+onMounted(() => {
+  // Check if geolocation is available
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        location.value = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+        fetchAddress(location.value);
+        console.log(location.value);
+      },
+      (err) => {
+        error.value = err.message;
+      }
+    );
+  } else {
+    error.value = "Geolocation is not supported by your browser.";
+  }
+});
+
+// Function to perform reverse geocoding using Nominatim
+const fetchAddress = async (location) => {
+  try {
+    console.log(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.latitude}&lon=${location.longitude}`
+    );
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.latitude}&lon=${location.longitude}`
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    geolocate.value = data.display_name;
+    console.log(data);
+    // data.display_name typically contains a human-readable address
+    address.value = data.display_name || "Address not found";
+  } catch (err) {
+    error.value = err.message;
+  }
+};
 
 const sendSMS = async () => {
   try {
@@ -117,7 +160,7 @@ const saveDonor = async () => {
   } else {
     stage.value.info = false;
     stage.value.complete = true;
-    sendSMS()
+    sendSMS();
   }
 };
 </script>
@@ -132,7 +175,7 @@ const saveDonor = async () => {
 }
 
 #sidebar {
-  background: #fe3737;
+  background: #640001;
   background-size: cover;
   color: white !important;
 }
