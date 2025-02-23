@@ -1,16 +1,14 @@
 <template>
   <div id="result">
-    <h1>Chevron Medical Hospital</h1>
-    <p>23/25, Soluyi Estate, Gbagada</p>
+    <h1>{{ data.name }}</h1>
+    <p>{{ data.address }}</p>
 
     <div class="wrapper">
       <div class="card">
         <p class="title">Basic Information</p>
         <div class="gridder">
-          <p><span class="bold">Phone numbers:</span> 08033285222, 012772222</p>
-          <p>
-            <span class="bold">Email Address:</span> contact@chevmedical.com
-          </p>
+          <p><span class="bold">Phone numbers:</span> {{ data.phone }}</p>
+          <p><span class="bold">Email Address:</span> {{ data.email }}</p>
           <p><span class="bold">Operating hous:</span> Mon-Sat (8am - 5pm)</p>
           <!-- <p><span class="bold">Holiday hours:</span> 9am - 4pm</p> -->
         </div>
@@ -33,42 +31,42 @@
             <tbody>
               <tr>
                 <td>A+<br /></td>
-                <td>3</td>
+                <td>{{ getBlood("ap") }}</td>
                 <td><span class="green">Sufficient</span></td>
               </tr>
               <tr>
                 <td>A-</td>
-                <td>15</td>
+                <td>{{ getBlood("an") }}</td>
                 <td><span class="green">Sufficient</span></td>
               </tr>
               <tr>
                 <td>B+</td>
-                <td>8</td>
+                <td>{{ getBlood("bp") }}</td>
                 <td><span class="warn">Low Stock</span></td>
               </tr>
               <tr>
                 <td>B-</td>
-                <td>20</td>
+                <td>{{ getBlood("bn") }}</td>
                 <td><span class="red">Critical Shortage</span></td>
               </tr>
               <tr>
                 <td>AB+</td>
-                <td>2</td>
+                <td>{{ getBlood("abp") }}</td>
                 <td><span class="green">Sufficient</span></td>
               </tr>
               <tr>
                 <td>AB-</td>
-                <td>12</td>
+                <td>{{ getBlood("abn") }}</td>
                 <td><span class="warn">Low Stock</span></td>
               </tr>
               <tr>
                 <td>O+</td>
-                <td>5</td>
+                <td>{{ getBlood("op") }}</td>
                 <td><span class="warn">Low Stock</span></td>
               </tr>
               <tr>
                 <td>O-</td>
-                <td>10</td>
+                <td>{{ getBlood("on") }}</td>
                 <td><span class="red">Critical Shortage</span></td>
               </tr>
             </tbody>
@@ -101,12 +99,22 @@
         </div>
       </div>
 
-      <button>Request for Blood Now</button>
+      <div class="btn-groups">
+          <button>Request for Blood Now</button>
+          <button @click="$emit('toList')" class="back-btn">Go Back</button>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const props = defineProps(["data"]);
+
+const getBlood = (type) => {
+  //console.log(props.data.blood[type]);
+  return props.data.blood[type];
+};
+</script>
 
 <style scoped lang="less">
 #result {
@@ -232,7 +240,6 @@ button {
   padding: 15px 20px;
   border-radius: 7px;
   border: none;
-  margin: 0 auto;
   font-size: 1.5rem;
   font-weight: 500;
   background: #6c63ff;
@@ -244,5 +251,19 @@ button {
   &:hover {
     background: #5a4dfc;
   }
+}
+
+.btn-groups {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-btn {
+    width: auto;
+    margin-left: 20px;
+    background: #e2e2e2 !important;
+    color: @color;
+    box-shadow: none;
 }
 </style>

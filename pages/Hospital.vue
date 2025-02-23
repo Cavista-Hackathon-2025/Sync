@@ -12,14 +12,20 @@
       </div>
     </div>
     <div class="user-panel">
-      <Bank v-if="stage.result"></Bank>
+
+      <Bank v-if="stage.result" :data="activeBank" @toList="goBackList"></Bank>
 
       <div class="full-panel listing" v-else-if="stage.list">
         <p class="greeting">
           Welcome, <span class="name">{{ name }}</span>
         </p>
         <div class="center">
-          <div class="bank-card" v-for="bank in banks" :key="bank.name">
+          <div
+            class="bank-card"
+            v-for="bank in banks"
+            :key="bank.name"
+            @click="toBank(bank)"
+          >
             <span class="km">{{ bank.km }}</span>
             <p class="name">{{ bank.name }}</p>
             <p><span class="stock">Address:</span> {{ bank.address }}</p>
@@ -51,13 +57,13 @@
       ></Loading>
 
       <div class="info" v-else-if="stage.info">
-        <h2>Hi, Welcome to Sync</h2>
+        <h2>Hi, Welcome to Blood Sync</h2>
         <p>
           Instantly check nearby blood banks for the exact blood types your
           patients need.
         </p>
         <input v-model="name" type="text" placeholder="Hospital Name" />
-        <input v-model="number" type="number" placeholder="WhatsApp number" />
+        <input v-model="number" type="number" placeholder="Telephone number" />
         <button @click="toNext('locate')" class="continue-btn">Continue</button>
       </div>
     </div>
@@ -92,9 +98,22 @@ const banks = ref([
   },
 ]);
 
+const activeBank = ref(null);
 const location = ref(null);
 const geolocate = ref("");
 const error = ref(null);
+
+const toBank = (bank) => {
+  activeBank.value = bank;
+  stage.value.list = false;
+  stage.value.result = true;
+};
+
+const goBackList = () => {
+  activeBank.value = null;
+  stage.value.result = false;
+  stage.value.list = true;
+};
 
 onMounted(() => {
   // Check if geolocation is available
@@ -188,16 +207,16 @@ const hideLocate = () => {
 
 function updateBankInPlace(banks) {
   // Helper function to format a single blood type
-  const formatBloodType = type =>
+  const formatBloodType = (type) =>
     type.toUpperCase().replace("P", "+").replace("N", "-");
 
   // Update each object in the banks array
-  banks.forEach(bankObj => {
+  banks.forEach((bankObj) => {
     bankObj.available = bankObj.available.map(formatBloodType);
     bankObj.needed = bankObj.needed.map(formatBloodType);
   });
 
-  return banks
+  return banks;
 }
 
 const getBanks = async () => {
@@ -205,7 +224,6 @@ const getBanks = async () => {
   const { data, error } = await supabase.from("banks").select();
 
   banks.value = updateBankInPlace(data);
-  
 };
 </script>
 
@@ -256,6 +274,7 @@ const getBanks = async () => {
     background: white;
     opacity: 0.6;
     font-weight: 500;
+    transform: scale(0.9);
   }
 
   .icon-wrapper {
