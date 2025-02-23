@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const message = await client.messages.create({
-      body: "Welcome To BloodSync! Your willingness to donate makes a real difference. We will alert you when it's time to give the gift of life.",
+      body: "Dear donor, your blood type (O-) is in high demand at Sync Team Blood Bank, 123 Lifeline Avenue Street. Please call 08096551274 if you can donate.",
       from: "+13865171384",
       to: "+2347062065345",
     });

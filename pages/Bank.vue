@@ -85,6 +85,20 @@
             </div>
           </div>
 
+          <div class="card">
+            <p>Needed Blood Group</p>
+            <div class="gridder2">
+              <div class="type" :class="{ active: incl('A+') }" @click="toNeed('A+')">A+</div>
+              <div class="type" :class="{ active: incl('A-') }" @click="toNeed('A-')">A-</div>
+              <div class="type" :class="{ active: incl('B+') }" @click="toNeed('B+')">B+</div>
+              <div class="type" :class="{ active: incl('B-') }" @click="toNeed('B-')">B-</div>
+              <div class="type" :class="{ active: incl('AB+') }" @click="toNeed('AB+')">AB+</div>
+              <div class="type" :class="{ active: incl('AB-') }" @click="toNeed('AB-')">AB-</div>
+              <div class="type" :class="{ active: incl('O+') }" @click="toNeed('O+')">O+</div>
+              <div class="type" :class="{ active: incl('O-') }" @click="toNeed('O-')">O-</div>
+            </div>
+          </div>
+
           <button class="update-btn" @click="update">
             <Icon v-if="isLoading" name="codex:loader" size="40px"></Icon>
             <span v-else>Update Stock</span>
@@ -111,9 +125,34 @@ const address = ref("");
 const email = ref("");
 const bloodGroups = ref({});
 
+const needed = ref([])
+
+const toNeed = (type) => {
+  if (needed.value.includes(type)) {
+    needed.value = needed.value.filter((item) => item !== type);
+  } else {
+    needed.value.push(type);
+  }
+  console.log(needed.value);
+};
+
+const incl = (type) => {
+  return needed.value.includes(type);
+};
+
 onMounted(() => {
   getBank();
 });
+
+const donateSMS = async () => {
+  try {
+    // Trigger the server API endpoint using $fetch
+    const response = await $fetch("/api/donate-sms");
+    console.log("SMS Response:", response);
+  } catch (error) {
+    console.error("Error sending SMS:", error);
+  }
+};
 
 const update = async () => {
   isLoading.value = true;
@@ -125,9 +164,11 @@ const update = async () => {
       address: address.value,
       email: email.value,
       blood: bloodGroups.value,
+      needed: needed.value,
     })
     .eq("id", 1);
   isLoading.value = false;
+  donateSMS()
   console.log(data);
 };
 
@@ -282,6 +323,22 @@ const getBank = async () => {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .gridder2 {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+
+    .type {
+      border: 2px solid #ccc;
+      padding: 20px;
+      cursor: pointer;
+    }
+
+    .type.active {
+      background: #dfdcdc;
+    }
   }
 
   input,
