@@ -6,11 +6,18 @@
     <div class="center">
       <Icon name="eos-icons:loading" size="50px"></Icon>
       <p>Searching Blood Banks...</p>
+      <p class="location">Your Current Location is {{ address }}</p>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const props = defineProps(['name', 'address'])
+
+watchEffect(() => {
+  console.log(props.address)
+})
+</script>
 
 <style scoped lang="less">
 .full-panel {
@@ -47,5 +54,12 @@
   align-items: center;
   gap: 20px;
   margin-top: 150px;
+}
+
+.location {
+    max-width: 400px;
+    font-size: 1.5rem;
+    color: #919191;
+    text-align: center;
 }
 </style>

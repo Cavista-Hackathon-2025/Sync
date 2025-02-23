@@ -7,7 +7,7 @@
           <div class="icon-wrapper">
             <Icon name="fluent:location-24-filled" />
           </div>
-          <p>Searching for a Blood Bank Near You...</p>
+          <p>Let's connect you to a Blood Bank Near You...</p>
         </div>
       </div>
     </div>
@@ -44,29 +44,20 @@
         </div>
       </div>
 
-
-      <Loading v-else-if="stage.locate"></Loading>
-      <!-- <div class="full-panel loading" v-else-if="stage.locate">
-        <p class="greeting">
-          Welcome, <span class="name">{{ name }}</span>
-        </p>
-        <div class="center">
-          <Icon name="eos-icons:loading" size="50px"></Icon>
-          <p>Searching Blood Banks...</p>
-        </div>
-      </div> -->
+      <Loading
+        v-else-if="stage.locate"
+        :name="name"
+        :address="geolocate"
+      ></Loading>
 
       <div class="info" v-else-if="stage.info">
         <h2>Hi, Welcome to Sync</h2>
         <p>
-          Instantly check nearby blood banks for the exact blood types your patients need.
+          Instantly check nearby blood banks for the exact blood types your
+          patients need.
         </p>
         <input v-model="name" type="text" placeholder="Hospital Name" />
-        <input
-          v-model="number"
-          type="number"
-          placeholder="WhatsApp number"
-        />
+        <input v-model="number" type="number" placeholder="WhatsApp number" />
         <button @click="toNext('locate')" class="continue-btn">Continue</button>
       </div>
     </div>
@@ -101,9 +92,56 @@ const banks = ref([
   },
 ]);
 
+const location = ref(null);
+const geolocate = ref("");
+const error = ref(null);
+
+onMounted(() => {
+  // Check if geolocation is available
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        location.value = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+        fetchAddress(location.value);
+        console.log(location.value);
+      },
+      (err) => {
+        error.value = err.message;
+      }
+    );
+  } else {
+    error.value = "Geolocation is not supported by your browser.";
+  }
+});
+
+// Function to perform reverse geocoding using Nominatim
+const fetchAddress = async (location) => {
+  try {
+    console.log(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.latitude}&lon=${location.longitude}`
+    );
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${location.latitude}&lon=${location.longitude}`
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await response.json();
+    geolocate.value = data.display_name;
+    console.log(data);
+    // data.display_name typically contains a human-readable address
+    address.value = data.display_name || "Address not found";
+  } catch (err) {
+    error.value = err.message;
+  }
+};
+
 const stage = ref({
   info: true,
-  locate: true, //localStorage.getItem("name") || false
+  locate: false, //localStorage.getItem("name") || false
   list: false,
   result: false,
 });
@@ -113,9 +151,25 @@ const number = ref("");
 
 const toNext = (next) => {
   if (next === "locate") {
+    triggerWatch();
     stage.value.info = false;
     stage.value.locate = true;
   }
+};
+
+const triggerWatch = () => {
+  watchEffect(() => {
+    if (geolocate.value.length > 1) {
+      hideLocate();
+    }
+  });
+};
+
+const hideLocate = () => {
+  window.setTimeout(() => {
+    stage.value.locate = false;
+    stage.value.list = true;
+  }, 2000);
 };
 </script>
 
@@ -352,6 +406,7 @@ const toNext = (next) => {
   }
 
   .km {
+    display: none;
     position: absolute;
     top: 15px;
     right: 15px;
