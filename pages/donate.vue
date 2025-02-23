@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="user-panel">
-      <div class="info">
+      <div class="info" v-show="false">
         <h2>Welcome to BloodSync</h2>
         <p>
           Instantly check nearby blood banks for the exact blood types your
@@ -28,7 +28,8 @@
         </p>
         <input v-model="name" type="text" placeholder="Full Name" />
         <input v-model="number" type="number" placeholder="Phone number" />
-        <input v-model="number" type="number" placeholder="Email Address" />
+        <input v-model="email" type="number" placeholder="Email Address" />
+        <input v-model="text" type="number" placeholder="Location" disabled />
         <select name="blood" id="blood-select">
           <option value="">--Please choose an option--</option>
           <option value="ap">A+</option>
@@ -41,6 +42,19 @@
           <option value="on">O-</option>
         </select>
         <button @click="toNext('locate')" class="continue-btn">Continue</button>
+        <p class="notice">
+          By clicking Continue you agree to receive notifications from blood
+          banks and be prompted for donation opportunities.
+        </p>
+      </div>
+
+      <div class="save">
+        <Icon name="nrk:media-media-complete" size="70px"></Icon>
+        <p>
+          You're officially part of a life-saving movement!<br /><br />
+          We'll notify you when there's an urgent need for your blood type—thank
+          you for being a real-world hero! 💙
+        </p>
       </div>
     </div>
   </div>
@@ -97,6 +111,12 @@ const number = ref("");
   margin-top: 20px;
 }
 
+.notice {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  color: #919191;
+}
+
 .quote {
   position: absolute;
   bottom: 5%;
@@ -138,6 +158,24 @@ const number = ref("");
   }
 }
 
+.save {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  .iconify {
+    color: #6c63ff;
+  }
+
+  p {
+    font-weight: 500;
+    font-size: 1.8rem;
+    margin-top: 20px;
+  }
+}
+
 .info {
   display: flex;
   flex-direction: column;
@@ -145,7 +183,8 @@ const number = ref("");
   align-items: center;
   width: 100%;
 
-  input, select {
+  input,
+  select {
     width: 300px;
     max-width: 100%;
     padding: 15px 20px;
