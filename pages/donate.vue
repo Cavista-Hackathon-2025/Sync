@@ -91,15 +91,17 @@ const supabase = createClient(
   supabaseKey
 );
 
+const sendSMS = async () => {
+  try {
+    // Trigger the server API endpoint using $fetch
+    const response = await $fetch("/api/send-sms");
+    console.log("SMS Response:", response);
+  } catch (error) {
+    console.error("Error sending SMS:", error);
+  }
+};
+
 const saveDonor = async () => {
-  console.log(
-    name.value,
-    number.value,
-    email.value,
-    location.value,
-    bloodtype.value,
-    supabaseKey
-  );
   isLoading.value = true;
   const { error } = await supabase.from("donors").insert({
     name: name.value,
@@ -115,6 +117,7 @@ const saveDonor = async () => {
   } else {
     stage.value.info = false;
     stage.value.complete = true;
+    sendSMS()
   }
 };
 </script>
