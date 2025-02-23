@@ -1,10 +1,10 @@
 <template>
   <div id="container">
-    <h1>Team Sync</h1>
+    <h1>Blood Sync</h1>
     <p>Every drop counts in saving a life.<br> The Smart Blood Bank connects patients, hospitals, and donors in real time</p>
 
     <div class="wrapper">
-      <nuxt-link to="/donate">Donator</nuxt-link>
+      <nuxt-link to="/donate">Donors</nuxt-link>
       <nuxt-link to="/bank">Blood Bank</nuxt-link>
       <nuxt-link to="/hospital">Hospital</nuxt-link>
     </div>

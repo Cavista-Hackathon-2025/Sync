@@ -2,7 +2,7 @@
   <div id="container">
     <div id="sidebar">
       <div class="sidebar-content">
-        <p class="team">Team Sync 4 Blood Banks</p>
+        <p class="team">Blood Sync 4 Blood Banks</p>
         <p class="title">No Shortages, No Delays—Optimise Your Blood Supply!</p>
         <p class="text">
           Low stocks should never mean lost lives. Share inventory, receive
